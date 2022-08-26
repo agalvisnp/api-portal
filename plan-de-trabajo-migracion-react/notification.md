@@ -4,6 +4,9 @@ description: lorem ipsum lorem ipsum lorem ipsum
 
 # 🎯 Notification
 
+* lorem ipsum 1
+* lorem ipsum 2
+
 {% embed url="https://www.loom.com/share/95cd3f765304425583fb66f40d521d3c" %}
 
 {% embed url="https://gist.github.com/LuisMDeveloper/a900acbf7140c18217dc7a1679c52114" %}
