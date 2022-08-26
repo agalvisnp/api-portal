@@ -1,0 +1,129 @@
+openapi: 3.0.0
+info:
+  description: Notification
+  version: "v1"
+  title: Notification
+servers:
+  - description: Novopayment Sandbox
+    url: https://sandbox-api.novopayment.com/
+security:
+  - ApiKeyAuth: []
+paths:
+  "/itsp/{clientID}/vtis/v1/notification":
+    post:
+      tags:
+        - Notification
+      parameters: 
+        - name: clientID
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Notification
+      description: The I-TSP notification to the issuer is done through a REST request to the URL previously set by the issuer. The notifications sent to the issuer related to the token or the device.
+      operationId: Notification
+      requestBody:
+        $ref: '#/components/requestBodies/RQNotification'
+      responses:
+        '200':
+          $ref: '#/components/responses/RSSuccess'
+        '400':
+          $ref: '#/components/responses/RSBadRequest'
+        '401':
+          $ref: '#/components/responses/RSUnauthorized'
+        '500':
+          $ref: '#/components/responses/RSInternalServerError'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  schemas:
+    RQNotification:
+      type: object
+      required:
+        - tokenRequestorID
+        - tokenReferenceID
+        - panReferenceID
+        - messageReasonCode
+        - dateTimeOfEvent
+        - encryptedData
+      properties:
+        tokenRequestorID:
+          type: integer
+          example: 40022358974
+        tokenReferenceID:
+          type: string
+          example: 'DNITHE30194726875234047'
+        panReferenceID:
+          type: string
+          example: 'V-3019231458906209630635'
+        messageReasonCode:
+          type: string
+          enum:
+          - TOKEN_CREATED
+          - TOKEN_DEACTIVATED
+          - TOKEN_SUSPEND
+          - TOKEN_RESUME
+          - DEVICE_PROVISIONING_RESULT
+          - OTP_VERIFICATION_RESULT
+          - CALL_CENTER_ACTIVATION
+          - MOBILE_BANK_APP_ACTIVATION
+          - LUK_REPLENISHMENT
+          - DEVICE_PROVISIONING
+          - REPERSONALIZATION_RESULT
+          - TOKEN_EXPIRY_DATE_UPDATED
+          - TOKEN_DEVICE_BINDING_RESULT
+          - CARDHOLDER_STEPUP_RESULT
+          - RUSTED_LISTING_ENROLLMENT_RESULT
+          - TOKEN_DEVICE_BINDING_REMOVED
+          - ACCOUNT_UPDATE
+          - EXP_DATE_UPDATE
+          - ACCOUNT_LEVEL_RECORD_UPDATE
+          - CARD_METADATA_UPDATED
+        dateTimeOfEvent:
+          type: string
+          example: '2019-11-04T20:32:50.000z'
+        encryptedData: 
+          type: object
+          properties:
+            cardholderInfo:
+              type: object
+              properties:
+                primaryAccountNumber:
+                 type: string
+                 example: 'XX25XX25XX25XX25'
+                cvv2:
+                  type: string
+                  example: '153'
+                name:
+                  type: string
+                  example: 'Jhon Doe'
+                expirationDate:
+                  type: object
+                  properties:
+                    month:
+                      type: string
+                      example: '04'
+                    year:
+                      type: string
+                      example: '2023'
+  requestBodies:
+    RQNotification:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RQNotification'
+      required: true
+  responses:
+    RSSuccess:
+      description: 'Success'
+    RSUnauthorized:
+      description: "Invalid or missing authentication credentials."
+    RSNotFound:
+      description: "The server didn’t find anything matching the URL request."
+    RSInternalServerError:
+      description: "Internal Server Error. Visa must send request again or contact the issuer support."
+    RSBadRequest:
+      description: "The request could not be understood by the server due to malformed syntaxis. The client should not complete the request until it is corrected."
